@@ -1,13 +1,22 @@
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
 
+if (process.platform === "linux") {
+  app.disableHardwareAcceleration();
+  app.commandLine.appendSwitch("enable-transparent-visuals");
+}
+
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     minWidth: 900,
     minHeight: 600,
-    backgroundColor: "#1f2933",
+    transparent: true,
+    frame: false,
+    backgroundColor: "#00000000",
+    vibrancy: "under-window",
+    visualEffectState: "active",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
@@ -15,6 +24,8 @@ const createWindow = () => {
     },
     title: "Todo & Sticky Notes",
   });
+
+  mainWindow.setFullScreen(true);
 
   const indexFile = path.join(__dirname, "index.html");
   mainWindow.loadFile(indexFile).catch((error) => {
