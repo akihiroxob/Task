@@ -31,6 +31,7 @@ let todoCounter = 0;
 let noteCounter = 0;
 const todos: TodoItem[] = [];
 const notes: StickyNote[] = [];
+let highestZIndex = 0;
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
@@ -128,6 +129,7 @@ function renderTodos(): void {
 function attachDragBehaviour(noteElement: HTMLDivElement, note: StickyNote): void {
   noteElement.addEventListener('pointerdown', (event) => {
     const target = event.target as HTMLElement;
+    noteElement.style.zIndex = String(++highestZIndex);
     if (target.dataset.action === 'delete-note' || target.closest('[data-note-body="true"]')) {
       return;
     }
@@ -148,8 +150,8 @@ function attachDragBehaviour(noteElement: HTMLDivElement, note: StickyNote): voi
       const newX = moveEvent.clientX - boardRect.left - offsetX;
       const newY = moveEvent.clientY - boardRect.top - offsetY;
 
-      const maxX = Math.max(0, noteBoard.clientWidth - noteElement.offsetWidth);
-      const maxY = Math.max(0, noteBoard.clientHeight - noteElement.offsetHeight);
+      const maxX = Math.max(0, boardRect.width - noteElement.offsetWidth);
+      const maxY = Math.max(0, boardRect.height - noteElement.offsetHeight);
 
       note.x = clamp(newX, 0, maxX);
       note.y = clamp(newY, 0, maxY);
@@ -179,6 +181,7 @@ function createNoteElement(note: StickyNote): NoteElements {
   noteElement.style.backgroundColor = note.color;
   noteElement.style.left = `${note.x}px`;
   noteElement.style.top = `${note.y}px`;
+  noteElement.style.zIndex = String(++highestZIndex);
   noteElement.dataset.noteId = String(note.id);
   noteElement.setAttribute('role', 'group');
 
@@ -241,8 +244,9 @@ function createNoteElement(note: StickyNote): NoteElements {
 
 function addStickyNote(text: string, color: string): void {
   const baseOffset = notes.length * 24;
-  const boardWidth = noteBoard.clientWidth;
-  const boardHeight = noteBoard.clientHeight;
+  const boardRect = noteBoard.getBoundingClientRect();
+  const boardWidth = boardRect.width || window.innerWidth;
+  const boardHeight = boardRect.height || window.innerHeight;
   const maxX = Math.max(0, boardWidth - 220);
   const maxY = Math.max(0, boardHeight - 220);
   const initialX = maxX > 0 ? clamp(32 + (baseOffset % maxX), 0, maxX) : 32;
@@ -329,8 +333,9 @@ function hydrateNotes(): void {
     return;
   }
 
-  const boardWidth = noteBoard.clientWidth;
-  const boardHeight = noteBoard.clientHeight;
+  const boardRect = noteBoard.getBoundingClientRect();
+  const boardWidth = boardRect.width || window.innerWidth;
+  const boardHeight = boardRect.height || window.innerHeight;
   const maxX = boardWidth ? Math.max(0, boardWidth - 220) : undefined;
   const maxY = boardHeight ? Math.max(0, boardHeight - 220) : undefined;
 
@@ -354,3 +359,34 @@ if (!hadStoredTodos) {
 }
 
 hydrateNotes();
+
+window.addEventListener('resize', () => {
+  const boardRect = noteBoard.getBoundingClientRect();
+  const width = boardRect.width || window.innerWidth;
+  const height = boardRect.height || window.innerHeight;
+  let hasUpdates = false;
+
+  notes.forEach((note) => {
+    const element = noteBoard.querySelector<HTMLDivElement>(`.sticky-note[data-note-id='${note.id}']`);
+    if (!element) {
+      return;
+    }
+
+    const maxX = Math.max(0, width - element.offsetWidth);
+    const maxY = Math.max(0, height - element.offsetHeight);
+    const clampedX = clamp(note.x, 0, maxX);
+    const clampedY = clamp(note.y, 0, maxY);
+
+    if (clampedX !== note.x || clampedY !== note.y) {
+      note.x = clampedX;
+      note.y = clampedY;
+      element.style.left = `${note.x}px`;
+      element.style.top = `${note.y}px`;
+      hasUpdates = true;
+    }
+  });
+
+  if (hasUpdates) {
+    persistNotes();
+  }
+});

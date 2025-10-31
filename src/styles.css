@@ -1,8 +1,8 @@
 :root {
   color-scheme: dark light;
-  --bg: #1f2933;
-  --panel: #27323f;
-  --panel-soft: #2f3c4a;
+  --bg: rgba(17, 24, 39, 0.72);
+  --panel: rgba(39, 50, 63, 0.92);
+  --panel-soft: rgba(47, 60, 74, 0.92);
   --text-primary: #f8fafc;
   --text-secondary: #d9e2ec;
   --accent: #38bdf8;
@@ -17,9 +17,11 @@
 
 body {
   margin: 0;
-  background: radial-gradient(circle at top left, #243447, #111827 60%);
+  background: transparent;
   color: var(--text-primary);
   min-height: 100vh;
+  width: 100vw;
+  overflow: hidden;
 }
 
 .app-container {
@@ -27,8 +29,15 @@ body {
   grid-template-columns: 380px 1fr;
   gap: 24px;
   padding: 32px;
-  max-width: 1400px;
-  margin: 0 auto;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  position: relative;
+  z-index: 1;
+  align-content: start;
+  backdrop-filter: none;
+  background: transparent;
+  overflow-y: auto;
 }
 
 .section-header h1 {
@@ -162,17 +171,19 @@ button.primary:hover {
 .notes-section {
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 1;
 }
 
 .note-board {
-  position: relative;
-  flex: 1;
-  min-height: 480px;
-  background: rgba(15, 23, 42, 0.35);
-  border-radius: 16px;
-  border: 2px dashed rgba(148, 163, 184, 0.25);
-  padding: 16px;
-  overflow: hidden;
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  z-index: 10;
 }
 
 .sticky-note {
@@ -189,6 +200,8 @@ button.primary:hover {
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   color: #1f2933;
   font-weight: 600;
+  pointer-events: auto;
+  z-index: 11;
 }
 
 .sticky-note.dragging {
