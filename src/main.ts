@@ -3,10 +3,11 @@ import * as path from 'path';
 
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
-    fullscreen: true,
-    transparent: true,
-    backgroundColor: '#00000000',
-    autoHideMenuBar: true,
+    width: 1200,
+    height: 800,
+    minWidth: 900,
+    minHeight: 600,
+    backgroundColor: '#1f2933',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
