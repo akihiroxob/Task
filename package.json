@@ -1,0 +1,26 @@
+{
+  "name": "desktop-todolist",
+  "version": "1.0.0",
+  "description": "Electron-based desktop todo list with sticky notes.",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc && node scripts/copy-static.js",
+    "copy-static": "node scripts/copy-static.js",
+    "clean": "rm -rf dist",
+    "start": "npm run build && electron ."
+  },
+  "keywords": [
+    "electron",
+    "todo",
+    "sticky-notes"
+  ],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "electron": "^30.0.0",
+    "typescript": "^5.9.0"
+  }
+}

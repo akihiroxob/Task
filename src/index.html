@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo & Sticky Notes</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-container">
+      <section class="todo-section">
+        <header class="section-header">
+          <h1>タスク一覧</h1>
+          <p>やることを記録して進捗を管理しましょう。</p>
+        </header>
+        <form id="todo-form" class="panel">
+          <label for="todo-input">新しいタスク</label>
+          <div class="input-row">
+            <input id="todo-input" type="text" placeholder="やることを入力" autocomplete="off" />
+            <button type="submit" class="primary">追加</button>
+          </div>
+        </form>
+        <div class="panel">
+          <label for="todo-filter" class="inline">表示フィルター</label>
+          <select id="todo-filter">
+            <option value="all">すべて</option>
+            <option value="active">未完了</option>
+            <option value="completed">完了済み</option>
+          </select>
+        </div>
+        <ul id="todo-list" class="todo-list" aria-live="polite"></ul>
+      </section>
+      <section class="notes-section">
+        <header class="section-header">
+          <h1>付箋メモ</h1>
+          <p>自由に配置できるメモを追加できます。</p>
+        </header>
+        <form id="note-form" class="panel">
+          <label for="note-text">メモの内容</label>
+          <textarea id="note-text" rows="3" placeholder="アイデアや気づきをメモ"></textarea>
+          <div class="input-row">
+            <label for="note-color" class="inline">色</label>
+            <input id="note-color" type="color" value="#fcd34d" />
+            <button type="submit" class="primary">メモを追加</button>
+          </div>
+        </form>
+        <div id="note-board" class="note-board" aria-live="polite"></div>
+      </section>
+    </main>
+    <script src="renderer.js"></script>
+  </body>
+</html>
